@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?>
+<svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="0" x1="25" y2="15" x2="25" stroke="#E0E0E0" stroke-width="4"/>
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="15" x1="15" y2="15" x2="35" stroke="#E0E0E0" stroke-width="4"/>
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="22" x1="4" y2="22" x2="46" stroke="#E0E0E0" stroke-width="4"/>
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="28" x1="15" y2="28" x2="35" stroke="#E0E0E0" stroke-width="4"/>
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="35" x1="4" y2="35" x2="46" stroke="#E0E0E0" stroke-width="4"/>
+  <line vector-effect="non-scaling-stroke" stroke-linecap="round" y1="35" x1="25" y2="50" x2="25" stroke="#E0E0E0" stroke-width="4"/>
+</svg>
