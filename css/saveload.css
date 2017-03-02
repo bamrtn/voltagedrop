@@ -35,6 +35,11 @@
   overflow-y: auto;
 }
 .close{
+  user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
   font-size: 42px;
   text-align: center;
   vertical-align: middle;

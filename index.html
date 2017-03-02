@@ -167,6 +167,12 @@
 		  line-height: 50px;
 		  width: 50px;
 		  height: 50px;
+			z-index: 10;
+			user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
 		}
   </style>
 </head>
@@ -228,7 +234,10 @@
 		<div class="parameterField" id="powerField">-</div>
 		<div id="deleteButton" onclick="sideDelete()">Delete</div>
 		<div id="applyButton" onclick="sideApply()">Apply</div>
+		<div style="height: 140px; width: 0px"></div>
 	</div>
+	<i class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 310px;" onclick="zoomIn()">zoom_in</i>
+	<i class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 360px;" onclick="zoomOut()">zoom_out</i>
   <canvas id="c"/>
   <script>
 	var size = 10;
@@ -246,9 +255,14 @@
 	// Making sidebars resizable
 	var sidebar = document.getElementById('sidebar');
 	var sidebarResize = document.getElementById('sidebarResize');
+	var applyButton = document.getElementById('applyButton');
+	var deleteButton = document.getElementById('deleteButton');
 	sidebarResize.addDTListener(function(){},
 	function(event,object){
 		sidebar.style.width = event.clientX+'px';
+		sidebarResize.style.left = (event.clientX - 8)+'px';
+		applyButton.style.width = (event.clientX - 68)+'px';
+		deleteButton.style.width = (event.clientX - 68)+'px';
 	}, function(){}, undefined);
 
 	var renderbar = document.getElementById('renderbar');
@@ -424,6 +438,12 @@
 			}
 		}
   }
+	function zoomIn(){
+		wheelListener({deltaY:30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
+	}
+	function zoomOut(){
+		wheelListener({deltaY:-30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
+	}
 
   canvas.addDTListener(function(a,b){},changeOffset,function(a,b){},undefined);
   canvas.addEventListener('wheel',wheelListener);

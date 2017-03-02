@@ -77,10 +77,10 @@ input[type=text]:focus{
   font-size: 16px;
   color: #E0E0E0;
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   left: 20px;
-  width: calc(100% - 68px);
+  width: 232px;
   padding: 8px 10px 8px 10px;
   background: #d32f2f;
   border-radius: 2px;
@@ -99,10 +99,10 @@ input[type=text]:focus{
   font-size: 16px;
   color: #E0E0E0;
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: 80px;
   left: 20px;
-  width: calc(100% - 68px);
+  width: 232px;
   padding: 8px 10px 8px 10px;
   background: #F57C00;
   border-radius: 2px;
@@ -129,8 +129,8 @@ input[type=text]:focus{
 #sidebarResize{
   width: 8px;
   height: 100%;
-  position: absolute;
-  top: 0px;
-  right: 0px;
+  position: fixed;
+  top: 50px;
+  left: 292px;
   background: #424242;
 }
