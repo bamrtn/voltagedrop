@@ -106,7 +106,8 @@ var nodeCalc = function(){
     conn1.model.del();
   };
   // Actual calculator function
-  nodeCalc.calc = function(){
+  nodeCalc.calc = function(event){
+    event.preventDefault();
     var input = [];
     for(var i in this.array){
       for(var j in this.array[i].connect){

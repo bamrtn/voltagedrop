@@ -133,4 +133,9 @@ input[type=text]:focus{
   top: 50px;
   left: 292px;
   background: #424242;
+  user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
 }

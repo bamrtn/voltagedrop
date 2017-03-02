@@ -12,6 +12,7 @@
   <script src="dragTrack.js"></script>
 	<script src="saveload.js"></script>
 	<script src="sidebar.js"></script>
+	<script src="examples.js"></script>
 	<script src="elements/resistor.js"></script>
 	<script src="elements/vsource.js"></script>
 	<script src="elements/node.js"></script>
@@ -174,6 +175,13 @@
         -webkit-user-select: none;
         -o-user-select: none;
 		}
+		img{
+			user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+		}
   </style>
 </head>
 <body>
@@ -194,7 +202,7 @@
 	</div>
 	<div class="blind" id="loadDialog">
     <div class="dialog">
-      <div class="title" style="width: 100%">Load</div>
+      <div class="title">Load</div>
       <i class="material-icons close" style="opacity: 1" onclick="closeDialog('loadDialog')">close</i>
       <div class="dialogContent">
         <p style="font-size: 20px">
@@ -202,19 +210,25 @@
         </p>
 				<input id="loadCode" type="text" value=""/>
 				<div class="button" onclick="doLoad()">LOAD</div>
+				<div class="title">Examples</div><br>
+				<div class="button" onclick="load(examples[0])">H circuit</div>
+				<div class="button" onclick="load(examples[1])">Resistor cube</div>
+				<div class="button" onclick="load(examples[2])">Resistor grid</div>
+				<div class="button" onclick="load(examples[3])">Another resistor grid</div>
+				<div class="button" onclick="load(examples[4])">Series and parallel circuit</div>
     	</div>
   	</div>
 	</div>
 	<div id="menubar">
 		<i class="material-icons menuicon" onclick="openSave()">save</i>
 		<i class="material-icons menuicon" onclick="openDialog('loadDialog')">folder_open</i>
-		<img src="svg/resistor1.svg" onmousedown="startHorizontalResistor(event)" ontouchstart="startHorizontalResistorTouch(event)"/>
-		<img src="svg/resistor2.svg" onmousedown="startVerticalResistor(event)" ontouchstart="startVerticalResistorTouch(event)"/>
-		<img src="svg/vsourceUp.svg" onmousedown="startUpVsource(event)" ontouchstart="startUpVsourceTouch(event)"/>
-		<img src="svg/vsourceDown.svg" onmousedown="startDownVsource(event)" ontouchstart="startDownVsourceTouch(event)"/>
-		<img src="svg/vsourceLeft.svg" onmousedown="startLeftVsource(event)" ontouchstart="startLeftVsourceTouch(event)"/>
-		<img src="svg/vsourceRight.svg" onmousedown="startRightVsource(event)" ontouchstart="startRightVsourceTouch(event)"/>
-		<i class="material-icons menuicon" style="float: right" onclick="nCalc.calc()">play_arrow</i>
+		<img src="svg/resistor1.svg" onmousedown="startElem(event,'res','horizontal')" ontouchstart="startElemTouch(event,'res','horizontal')"/>
+		<img src="svg/resistor2.svg" onmousedown="startElem(event,'res','vertical')" ontouchstart="startElemTouch(event,'res','vertical')"/>
+		<img src="svg/vsourceUp.svg" onmousedown="startElem(event,'vsrc','up')" ontouchstart="startElemTouch(event,'vsrc','up')"/>
+		<img src="svg/vsourceDown.svg" onmousedown="startElem(event,'vsrc','down')" ontouchstart="startElemTouch(event,'vsrc','down')"/>
+		<img src="svg/vsourceLeft.svg" onmousedown="startElem(event,'vsrc','left')" ontouchstart="startElemTouch(event,'vsrc','left')"/>
+		<img src="svg/vsourceRight.svg" onmousedown="startElem(event,'vsrc','right')" ontouchstart="startElemTouch(event,'vsrc','right')"/>
+		<i class="material-icons menuicon" style="float: right" onclick="nCalc.calc(event)">play_arrow</i>
 	</div>
 	<div id="renderbar">
 		<div id="renderbarResize"></div>
@@ -236,8 +250,8 @@
 		<div id="applyButton" onclick="sideApply()">Apply</div>
 		<div style="height: 140px; width: 0px"></div>
 	</div>
-	<i class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 310px;" onclick="zoomIn()">zoom_in</i>
-	<i class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 360px;" onclick="zoomOut()">zoom_out</i>
+	<i id="zoomInButton" class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 310px;" onclick="zoomIn(event)">zoom_in</i>
+	<i id="zoomOutButton" class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 360px;" onclick="zoomOut(event)">zoom_out</i>
   <canvas id="c"/>
   <script>
 	var size = 10;
@@ -257,12 +271,16 @@
 	var sidebarResize = document.getElementById('sidebarResize');
 	var applyButton = document.getElementById('applyButton');
 	var deleteButton = document.getElementById('deleteButton');
+	var zoomInButton = document.getElementById('zoomInButton');
+	var zoomOutButton = document.getElementById('zoomOutButton');
 	sidebarResize.addDTListener(function(){},
 	function(event,object){
 		sidebar.style.width = event.clientX+'px';
 		sidebarResize.style.left = (event.clientX - 8)+'px';
 		applyButton.style.width = (event.clientX - 68)+'px';
 		deleteButton.style.width = (event.clientX - 68)+'px';
+		zoomOutButton.style.left = (event.clientX + 60)+'px';
+		zoomInButton.style.left = (event.clientX + 10)+'px';
 	}, function(){}, undefined);
 
 	var renderbar = document.getElementById('renderbar');
@@ -272,7 +290,6 @@
 		renderbar.style.width = window.innerWidth -event.clientX+'px';
 		engine.resize();
 	}, function(){}, undefined);
-  //cContainer = document.getElementById("cContainer");
   canvas = document.getElementById("c");
   ctx = canvas.getContext("2d");
 
@@ -280,14 +297,18 @@
 
 	// Functions to handle drag of elements
 
-  function startHorizontalResistor(event){
-		var res = new resistor('horizontal',0,0);
+  function startElem(event, type, subtype){
+		var res;
+		if (type == 'res') res = new resistor(subtype,0,0); else
+			res = new vsource(subtype,0,0);
 		event.preventDefault();
 		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
 		res.dispatchEvent(ev);
 	}
-	function startHorizontalResistorTouch(event){
-		var res = new resistor('horizontal',0,0);
+	function startElemTouch(event, type, subtype){
+		var res;
+		if (type == 'res') res = new resistor(subtype,0,0); else
+			res = new vsource(subtype,0,0);
 		event.preventDefault();
 		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
 			'target':event.changedTouches[0].target,
@@ -298,96 +319,8 @@
 			'identifier':event.changedTouches[0].identifier})]});
 		res.dispatchEvent(ev);
 	}
-	function startVerticalResistor(event){
-		var res = new resistor('vertical',0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startVerticalResistorTouch(event){
-		var res = new resistor('vertical',0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
-	function startUpVsource(event){
-		var res = new vsource('up',0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startUpVsourceTouch(event){
-		var res = new vsource('up',0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
-	function startDownVsource(event){
-		var res = new vsource('down',0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startDownVsourceTouch(event){
-		var res = new vsource('down',0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
-	function startLeftVsource(event){
-		var res = new vsource('left',0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startLeftVsourceTouch(event){
-		var res = new vsource('left',0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
-	function startRightVsource(event){
-		var res = new vsource('right',0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startRightVsourceTouch(event){
-		var res = new vsource('right',0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
+
+	// Canvas size
   var cWidth;
   var cHeight;
 
@@ -438,10 +371,12 @@
 			}
 		}
   }
-	function zoomIn(){
+	function zoomIn(event){
+		event.preventDefault();
 		wheelListener({deltaY:30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
 	}
-	function zoomOut(){
+	function zoomOut(event){
+		event.preventDefault();
 		wheelListener({deltaY:-30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
 	}
 
