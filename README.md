@@ -28,4 +28,4 @@ responsible for calculation is written in C++ and was translated into javascript
 using asm.js.
 
 
-Martin "Mazevec" Balint
+Martin Balint
