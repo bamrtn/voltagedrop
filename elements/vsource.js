@@ -1,14 +1,10 @@
 // Similar to resistor.js, see comments there
 var vsource = function(type,posX,posY){
-  var vsource = document.createElement('img');
-  if (type == 'up') vsource.className = 'vsourceUp';
-  if (type == 'down') vsource.className = 'vsourceDown';
-  if (type == 'left') vsource.className = 'vsourceLeft';
-  if (type == 'right') vsource.className = 'vsourceRight';
-  if (type == 'up') vsource.src = 'svg/vsourceUp2.svg';
-  if (type == 'down') vsource.src = 'svg/vsourceDown2.svg';
-  if (type == 'left') vsource.src = 'svg/vsourceLeft2.svg';
-  if (type == 'right') vsource.src = 'svg/vsourceRight2.svg';
+  var vsource = {t:'image',x:posX*100,y:posY*100};
+  if (type == 'up') vsource.src = imgVsrUp;
+  if (type == 'down') vsource.src = imgVsrDown;
+  if (type == 'left') vsource.src = imgVsrLeft;
+  if (type == 'right') vsource.src = imgVsrRight;
   vsource.model = new scene.vsource(type,posX,posY);
   vsource.type = type;
   vsource.posX = posX;
@@ -40,78 +36,75 @@ var vsource = function(type,posX,posY){
 
   vsource.position = function(){
     if (type == 'left' || type == 'right'){
-      this.style.left = this.posX*zoom+offsetX + 'px';
-      this.style.top = this.posY*zoom+offsetY-zoom/6 + 'px';
-      this.style.width = zoom + 'px';
-  		this.style.height = zoom/3 + 'px';
+      this.x = this.posX*100-10;
+      this.y = this.posY*100-13;
     }else{
-      this.style.left = this.posX*zoom+offsetX-zoom/6 + 'px';
-      this.style.top = this.posY*zoom+offsetY + 'px';
-      this.style.height = zoom + 'px';
-  		this.style.width = zoom/3 + 'px';
+      this.x = this.posX*100-13;
+      this.y = this.posY*100-10;
     }
   };
   vsource.position();
 
-  document.body.appendChild(vsource);
+  eImage.ch[1].ch[0].addChild(vsource);
 
   vsource.snap = function(){
-    if (type == 'left' || type == 'right'){
-      this.posX = Math.round((this.offsetLeft-offsetX)/zoom);
-  		this.posY = Math.round((this.offsetTop+zoom/10-offsetY)/zoom);
+    if (this.type == 'left' || this.type == 'right'){
+      this.posX = Math.round((this.x-offsetX)/zoom);
+  		this.posY = Math.round((this.y+zoom/10-offsetY)/zoom);
       if (this.posX>=size) this.posX = size - 1;
       if (this.posX<0) this.posX = 0;
       if (this.posY>size) this.posY = size;
       if (this.posY<0) this.posY = 0;
     }else{
-      this.posX = Math.round((this.offsetLeft+zoom/10-offsetX)/zoom);
-      this.posY = Math.round((this.offsetTop-offsetY)/zoom);
+      this.posX = Math.round((this.x+zoom/10-offsetX)/zoom);
+      this.posY = Math.round((this.y-offsetY)/zoom);
       if (this.posX>size) this.posX = size;
       if (this.posX<0) this.posX = 0;
       if (this.posY>size-1) this.posY = size - 1;
       if (this.posY<0) this.posY = 0;
     }
-    this.position();
   };
   vsource.del = function(){
     nCalc.disconnect(this.conn[0],this.conn[1]);
     this.node1.del();
     this.node2.del();
     this.model.del();
-    this.parentNode.removeChild(this);
+    eImage.ch[1].ch[0].delChild(this);
   };
-  vsource.firstDrag = true;
+
   vsource.moved = false;
   vsource.dragStart = function (event,object){
+    event.preventDefault();
     this.moved = false;
     select(this);
-    if (this.firstDrag){
-      this.firstDrag = false;
-      this.style.left = event.clientX +'px';
-  		this.style.top = event.clientY + 'px';
-    }
-    event.preventDefault();
+    eImage.ch[1].ch[0].delChild(this);
+    eImage.ch[2].ch[1].addChild(this);
+    this.x = offsetX+zoom*this.posX-(this.type == 'left' || this.type == 'right'?0.1*zoom:0.13*zoom);
+		this.y = offsetY+zoom*this.posY-(this.type == 'up' || this.type == 'down'?0.1*zoom:0.13*zoom);
   };
   vsource.dragWhile = function(event,object){
-    if ((object.startX-object.x)*(object.startX-object.x)+(object.startY-object.y)*(object.startY-object.y)>zoom/7 && !this.moved){
+    event.preventDefault();
+    if ((object.startX-object.x)*(object.startX-object.x)+(object.startY-object.y)*(object.startY-object.y)>70 && !this.moved){
       nCalc.disconnect(this.conn[0],this.conn[1]);
       this.node1.del();
       this.node2.del();
       this.model.del();
       this.moved = true;
     }
-		this.style.left = this.offsetLeft+object.movementX + 'px';
-		this.style.top = this.offsetTop+object.movementY + 'px';
-    event.preventDefault();
+		this.x += object.movementX;
+		this.y += object.movementY;
   };
   vsource.dragEnd = function (event,object){
+    event.preventDefault();
     this.snap();
+    eImage.ch[2].ch[1].delChild(this);
+    eImage.ch[1].ch[0].addChild(this);
+    this.position();
     if (this.moved){
       this.createNodes();
       this.model = new scene.vsource(this.type,this.posX,this.posY);
     }
-    event.preventDefault();
   };
-  vsource.addDTListener(vsource.dragStart,vsource.dragWhile,vsource.dragEnd,undefined);
+  dtCanvas.addDTListener(vsource,vsource.dragStart,vsource.dragWhile,vsource.dragEnd,undefined);
   return vsource;
 };

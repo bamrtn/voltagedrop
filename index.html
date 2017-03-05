@@ -3,189 +3,54 @@
 <head>
 	<meta charset="utf-8">
 	<title> Voltage Drop </title>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+
+	<!-- Fonts & CSS -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/sidebar.css">
 	<link rel="stylesheet" type="text/css" href="css/saveload.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	<!-- Dependencies -->
 	<script src="babylon.min.js"></script>
 	<script src="hand.min.js"></script>
-  <script src="dragTrack.js"></script>
-	<script src="saveload.js"></script>
-	<script src="sidebar.js"></script>
-	<script src="examples.js"></script>
+	<script src="screenfull.min.js"></script>
+
+	<!-- Own libraries -->
+  <script src="ui/dragTrack.js"></script>
+	<script src="ui/dragTrackCanvas.js"></script>
+	<script src="ui/canvasvg.js"></script>
+	<script src="ui/auto0px.js"></script>
+
+	<!-- UI -->
+	<script src="ui/saveload.js"></script>
+	<script src="ui/sidebar.js"></script>
+	<script src="ui/examples.js"></script>
+	<script src="ui/dialog.js"></script>
+	<script src="ui/render.js"></script>
+	<script src="ui/draw.js"></script>
+
+	<!-- Elements and calculation -->
 	<script src="elements/resistor.js"></script>
 	<script src="elements/vsource.js"></script>
 	<script src="elements/node.js"></script>
 	<script src="calc/nodeCalc.js"></script>
 	<script src="elements/line.js"></script>
-	<script src="dialog.js"></script>
-	<script src="auto0px.js"></script>
-	<script src="render.js"></script>
 	<script src="calc/calc.js"></script>
-  <style>
-    #c{
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0px;
-      left: 0px;
-    }/*
-    #cContainer{
-      width: 100%;
-      height: calc(100% - 50px);
-      position: absolute;
-      top: 50px;
-      left: 0px;
-    }*/
-		#menubar{
-			width: 100%;
-			height: 50px;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			background: #424242;
-			z-index: 10;
-		}
-		#renderbar{
-		  width: 500px;
-		  height: calc(100% - 50px);
-		  position: absolute;
-		  top: 50px;
-		  right: 0px;
-		  background: #E0E0E0;
-		  z-index: 10;
-		  overflow: hidden;
-		}
-		#renderbarResize{
-		  width: 8px;
-		  height: 100%;
-		  position: absolute;
-		  top: 0px;
-		  left: 0px;
-		  background: #424242;
-		}
-		#renderCanvas {
-			width: 100%;
-			height: 100%;
-			touch-action: none;
-		}
-		body{
-			overflow: hidden;
-		}
-		.horizontalResistor{
-			position: absolute;
-			z-index: 2;
-		}
-		.horizontalResistorBody{
-			position: absolute;
-			width: 60%;
-			left: 20%;
-			height: 100%;
-			background: #424242;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.horizontalResistorLegs{
-			position: absolute;
-			top: 50%;
-			width: 100%;
-			height: 0px;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.verticalResistor{
-			position: absolute;
-			z-index: 2;
-		}
-		.vsourceUp{
-			position: absolute;
-			z-index: 2;
-		}
-		.vsourceDown{
-			position: absolute;
-			z-index: 2;
-		}
-		.vsourceLeft{
-			position: absolute;
-			z-index: 2;
-		}
-		.vsourceRight{
-			position: absolute;
-			z-index: 2;
-		}
-		.verticalResistorBody{
-			position: absolute;
-			width: 100%;
-			top: 20%;
-			height: 60%;
-			background: #424242;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.verticalResistorLegs{
-			position: absolute;
-			left: 50%;
-			width: 0px;
-			height: 100%;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.lineX{
-			position: absolute;
-			z-index: 2;
-			height: 0px;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.lineY{
-			position: absolute;
-			z-index: 2;
-			width: 0px;
-			border: 2px solid #E0E0E0;
-			border-radius: 2px;
-		}
-		.node{
-			position: absolute;
-			z-index: 3;
-			background: rgba(0,0,0,0);
-			border: 2px solid #E0E0E0;
-			border-radius: 1000px;
-		}
-		.nodeNormal{
-			position: absolute;
-			z-index: 2;
-			background: #E0E0E0;
-			border: 2px solid #E0E0E0;
-			border-radius: 1000px;
-		}
-		.menuicon {
-			display: block;
-			float: left;
-			color: #E0E0E0;
-		  font-size: 32px;
-		  text-align: center;
-		  vertical-align: middle;
-		  line-height: 50px;
-		  width: 50px;
-		  height: 50px;
-			z-index: 10;
-			user-select: none;
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -o-user-select: none;
-		}
-		img{
-			user-select: none;
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -o-user-select: none;
-		}
-  </style>
 </head>
 <body>
-	<!-- Dialogs -->
+	<img id="openImg" src="svg/open.svg" style="display: none">
+	<img id="saveImg" src="svg/save.svg" style="display: none">
+	<img id="calcImg" src="svg/calc.svg" style="display: none">
+	<img id="fullscreenImg" src="svg/fullscreen.svg" style="display: none">
+	<img id="resistor1Img" src="svg/resistor1.svg" style="display: none">
+	<img id="resistor2Img" src="svg/resistor2.svg" style="display: none">
+	<img id="vsourceUpImg" src="svg/vsourceUp.svg" style="display: none">
+	<img id="vsourceDownImg" src="svg/vsourceDown.svg" style="display: none">
+	<img id="vsourceRightImg" src="svg/vsourceRight.svg" style="display: none">
+	<img id="vsourceLeftImg" src="svg/vsourceLeft.svg" style="display: none">
+		<!-- Dialogs -->
 	<div class="blind" id="saveDialog">
     <div class="dialog">
       <div class="title" style="width: 100%">Save</div>
@@ -219,17 +84,6 @@
     	</div>
   	</div>
 	</div>
-	<div id="menubar">
-		<i class="material-icons menuicon" onclick="openSave()">save</i>
-		<i class="material-icons menuicon" onclick="openDialog('loadDialog')">folder_open</i>
-		<img src="svg/resistor1.svg" onmousedown="startElem(event,'res','horizontal')" ontouchstart="startElemTouch(event,'res','horizontal')"/>
-		<img src="svg/resistor2.svg" onmousedown="startElem(event,'res','vertical')" ontouchstart="startElemTouch(event,'res','vertical')"/>
-		<img src="svg/vsourceUp.svg" onmousedown="startElem(event,'vsrc','up')" ontouchstart="startElemTouch(event,'vsrc','up')"/>
-		<img src="svg/vsourceDown.svg" onmousedown="startElem(event,'vsrc','down')" ontouchstart="startElemTouch(event,'vsrc','down')"/>
-		<img src="svg/vsourceLeft.svg" onmousedown="startElem(event,'vsrc','left')" ontouchstart="startElemTouch(event,'vsrc','left')"/>
-		<img src="svg/vsourceRight.svg" onmousedown="startElem(event,'vsrc','right')" ontouchstart="startElemTouch(event,'vsrc','right')"/>
-		<i class="material-icons menuicon" style="float: right" onclick="nCalc.calc(event)">play_arrow</i>
-	</div>
 	<div id="renderbar">
 		<div id="renderbarResize"></div>
 		<canvas id="renderCanvas"></canvas>
@@ -254,6 +108,7 @@
 	<i id="zoomOutButton" class="material-icons menuicon" style="position: absolute; bottom: 20px; left: 360px;" onclick="zoomOut(event)">zoom_out</i>
   <canvas id="c"/>
   <script>
+	getImages();
 	var size = 10;
 	// Load the BABYLON 3D engine
 	var canvas = document.querySelector("#renderCanvas");
@@ -291,34 +146,7 @@
 		engine.resize();
 	}, function(){}, undefined);
   canvas = document.getElementById("c");
-  ctx = canvas.getContext("2d");
-
-	var classes = ['horizontalResistor', 'verticalResistor', 'node', 'nodeNormal', 'lineX', 'lineY', 'vsourceUp', 'vsourceDown', 'vsourceLeft', 'vsourceRight'];
-
-	// Functions to handle drag of elements
-
-  function startElem(event, type, subtype){
-		var res;
-		if (type == 'res') res = new resistor(subtype,0,0); else
-			res = new vsource(subtype,0,0);
-		event.preventDefault();
-		var ev = new MouseEvent('mousedown',{'clientX':event.clientX,'clientY':event.clientY,'screenX':event.screenX,'screenY':event.screenY})
-		res.dispatchEvent(ev);
-	}
-	function startElemTouch(event, type, subtype){
-		var res;
-		if (type == 'res') res = new resistor(subtype,0,0); else
-			res = new vsource(subtype,0,0);
-		event.preventDefault();
-		var ev = new TouchEvent('touchstart',{'changedTouches':[new Touch({
-			'target':event.changedTouches[0].target,
-			'clientX':event.changedTouches[0].clientX,
-			'clientY':event.changedTouches[0].clientY,
-			'screenX':event.changedTouches[0].screenX,
-			'screenY':event.changedTouches[0].screenY,
-			'identifier':event.changedTouches[0].identifier})]});
-		res.dispatchEvent(ev);
-	}
+  ctx = canvas.getContext('2d');
 
 	// Canvas size
   var cWidth;
@@ -329,12 +157,15 @@
 
 	// Resize the canvas on window size change
   var cResize = function(){
-    cWidth = canvas.width = window.innerWidth;
-    cHeight = canvas.height = window.innerHeight;
+    eImage.ch[2].ch[0].ch[0].width = eImage.ch[0].ch[0].width = cWidth = canvas.width = window.innerWidth;
+    eImage.ch[0].ch[0].height = cHeight = canvas.height = window.innerHeight;
+		eImage.ch[2].ch[0].ch[1].effect.translate.x = cWidth - 100;
   };
 
   window.onresize = cResize;
   cResize();
+
+	var dtCanvas = new DragTrackCanvas(canvas,eImage);
 
 	// Variables describing the current position of the canvas
   var zoom = 70;
@@ -345,55 +176,45 @@
   function changeOffset(event,object){
     offsetX += object.movementX;
     offsetY += object.movementY;
-		for (var j in classes){
-			var elems = document.getElementsByClassName(classes[j]);
-			for (var i =0; i<elems.length; i++){
-				elems[i].style.left = (elems[i].offsetLeft + object.movementX) + 'px';
-				elems[i].style.top = (elems[i].offsetTop + object.movementY) + 'px';
-			}
-		}
   }
   var wheelListener = function(event){
     var delta;
-    if (event.deltaY/5+zoom<8){
+    if (event.deltaY/-9+zoom<8){
       delta = 8-zoom;
       zoom = 8;
     }else{
-      zoom += event.deltaY/5;
-      delta = event.deltaY/5;
+      zoom += event.deltaY/-9;
+      delta = event.deltaY/-9;
     }
     offsetX = event.offsetX-zoom/(zoom-delta)*(event.offsetX-offsetX);
     offsetY = event.offsetY-zoom/(zoom-delta)*(event.offsetY-offsetY);
-		for (var j in classes){
-			var elems = document.getElementsByClassName(classes[j]);
-			for (var i =0; i<elems.length; i++){
-				elems[i].position();
-			}
-		}
+		drawBitmap();
   }
 	function zoomIn(event){
 		event.preventDefault();
-		wheelListener({deltaY:30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
+		wheelListener({deltaY:-30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
 	}
 	function zoomOut(event){
 		event.preventDefault();
-		wheelListener({deltaY:-30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
+		wheelListener({deltaY:30, offsetY: window.innerHeight/2, offsetX: window.innerWidth/2});
 	}
 
-  canvas.addDTListener(function(a,b){},changeOffset,function(a,b){},undefined);
+  dtCanvas.addDTListener(eImage.ch[0].ch[0],function(a,b){},changeOffset,function(a,b){},undefined);
   canvas.addEventListener('wheel',wheelListener);
 
 	// Initalizing the calculator end
 	nCalc = new nodeCalc();
 
-	// Drawing the background
-  var draw = function(){
+	var draw = function(){
     ctx.fillStyle = "#212121";
     ctx.fillRect(0,0,cWidth,cHeight);
 
     //grid
     ctx.strokeStyle = "#616161";
     ctx.lineWidth = 2;
+		eImage.ch[1].effect.scale.ratio = zoom / 100;
+		eImage.ch[1].effect.translate.x = offsetX/eImage.ch[1].effect.scale.ratio;
+		eImage.ch[1].effect.translate.y = offsetY/eImage.ch[1].effect.scale.ratio;
     for (var i=0; i<size+1; i++){
       ctx.beginPath();
       ctx.moveTo(offsetX, offsetY+i*zoom);
@@ -406,10 +227,13 @@
       ctx.lineTo(offsetX+i*zoom, offsetY+size*zoom);
       ctx.stroke();
     }
+		drawShapes(canvas,ctx,eImage);
   }
-
-	// Starting render loop
+	drawBitmap();
   setInterval(draw, 17);
+	function benchmark(){
+		for (var j = 0; j<size; j++){for (var i = 0; i<size; i++){new resistor('horizontal',i,j); new resistor('vertical',i,j);}}
+	}
   </script>
 </body>
 </html>
