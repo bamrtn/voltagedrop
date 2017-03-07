@@ -57,10 +57,10 @@
   transition: background 0.4s, opacity 0.4s;
 }
 .close:hover{
-  background: #E0E0E0;
+  background: rgba(0,0,0,0.3);
 }
 .close:active{
-  background: #BDBDBD;
+  background: rgba(0,0,0,0.6);
 }
 .title{
   display: inline-block;

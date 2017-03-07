@@ -1,7 +1,8 @@
 // Getting loaded images
-var eImage, openImg, saveImg, calcImg, fullscreenImg, resistor1Img, resistor2Img, vsourceUpImg, vsourceDownImg, vsourceLeftImg, vsourceRightImg, imgResVer, imgResVerCtx, imgResHor, imgResHorCtx, imgVsrUp, imgVsrUpCtx, imgVsrDown, imgVsrDownCtx, imgVsrLeft, imgVsrLeftCtx, imgVsrRight, imgVsrRightCtx;
+var eImage, openImg, saveImg, helpImg, calcImg, fullscreenImg, resistor1Img, resistor2Img, vsourceUpImg, vsourceDownImg, vsourceLeftImg, vsourceRightImg, imgResVer, imgResVerCtx, imgResHor, imgResHorCtx, imgVsrUp, imgVsrUpCtx, imgVsrDown, imgVsrDownCtx, imgVsrLeft, imgVsrLeftCtx, imgVsrRight, imgVsrRightCtx;
 function getImages(){
   openImg = document.getElementById('openImg');
+  helpImg = document.getElementById('helpImg');
   saveImg = document.getElementById('saveImg');
   calcImg = document.getElementById('calcImg');
   fullscreenImg = document.getElementById('fullscreenImg');
@@ -62,7 +63,15 @@ function getImages(){
             {t:'g', // Group of icons on right
               effect:{translate:{x:0,y:0}},
               ch:[
-                {t:'image',x:10,y:10,width:30,height:30,src:fullscreenImg,
+                {t:'image',x:10,y:10,width:30,height:30,src:helpImg,
+                  DragTrack:{listeners:[{
+                    startDrag:function(event,object){
+                      event.preventDefault();
+                      openDialog('helpDialog');
+                    }, whileDrag:function(){},endDrag:function(){},params:undefined,
+                    running:false,index:0,currentlyDraggedIndex:-1, originalElem: window
+                  }]}},
+                {t:'image',x:60,y:10,width:30,height:30,src:fullscreenImg,
                   DragTrack:{listeners:[{
                     startDrag:function(event,object){
                       event.preventDefault();
@@ -72,7 +81,7 @@ function getImages(){
                     }, whileDrag:function(){},endDrag:function(){},params:undefined,
                     running:false,index:0,currentlyDraggedIndex:-1, originalElem: window
                   }]}},
-                {t:'image',x:60,y:10,width:30,height:30,src:calcImg,
+                {t:'image',x:110,y:10,width:30,height:30,src:calcImg,
                   DragTrack:{listeners:[{
                     startDrag:function(event,object){
                       event.preventDefault();

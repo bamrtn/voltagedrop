@@ -14,10 +14,10 @@ circuit may only consists of one component and may not contain contradicting
 voltage sources, while containing at least one. If your circuit is valid, you
 can press the play button in the top right corner to visualize voltage drops in
 3D. You can delete elements and specify resistances and voltages using the panel
-on the left. You can also see calculated values here. There is also an option to
+on the left. You can also see calculated values there. There is also an option to
 save and load your circuits in the top left corner.
 
-Check the examples file for some interesting circuits!
+Check the examples in the open menu!
 
 About the software
 ------------------

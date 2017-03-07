@@ -129,6 +129,10 @@ var nodeCalc = function(){
       return v;
     }
     var o = Module.calc(genV());
+    if (o.size() == 1){
+      errorMessage.style.transform = 'translate(-50%, 0%)';
+      return;
+    }
     for (var i=0; i<this.array.length; i++){
       this.array[i].voltage = o.get(i);
     }

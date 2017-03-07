@@ -40,7 +40,9 @@
 	<script src="calc/calc.js"></script>
 </head>
 <body>
+<div id="bodyCont">
 	<img id="openImg" src="svg/open.svg" style="display: none">
+  <img id="helpImg" src="svg/help.svg" style="display: none">
 	<img id="saveImg" src="svg/save.svg" style="display: none">
 	<img id="calcImg" src="svg/calc.svg" style="display: none">
 	<img id="fullscreenImg" src="svg/fullscreen.svg" style="display: none">
@@ -51,6 +53,14 @@
 	<img id="vsourceRightImg" src="svg/vsourceRight.svg" style="display: none">
 	<img id="vsourceLeftImg" src="svg/vsourceLeft.svg" style="display: none">
 		<!-- Dialogs -->
+  <div class="error" id="errorMessage">
+    <i class="material-icons close" style="opacity: 1" onclick="errorMessage.style.transform = 'translate(-50%, -150%)';">close</i>
+    <div class="title" style="width: 100%">Error</div>
+    <p style="font-size: 20px">
+      Make sure that your circuit consists of one component, does not contain contradicting voltage sources, and contains at least one.
+      For more information click the help button in the top right corner.
+    </p>
+  </div>
 	<div class="blind" id="saveDialog">
     <div class="dialog">
       <div class="title" style="width: 100%">Save</div>
@@ -61,6 +71,35 @@
         </p>
         <p id="saveCode">
 
+        </p>
+    	</div>
+  	</div>
+	</div>
+  <div class="blind" id="helpDialog">
+    <div class="dialog">
+      <div class="title" style="width: 100%">Help</div>
+      <i class="material-icons close" style="opacity: 1" onclick="closeDialog('helpDialog')">close</i>
+      <div class="dialogContent">
+        <p style="font-size: 20px">
+          How to use Voltage Drop
+        </p>
+        <p style="font-size: 14px">
+          Drag voltage sources and resistors from the title bar at the top onto the editor grid.
+          Then connect them by dragging the little circles next to them.
+        </p>
+        <img src="img/help1.png" class="helpImg">
+        <p style="font-size: 14px">
+          Your circuit may only consists of one component and may not contain contradicting voltage sources, while containing at least one.
+          If your circuit is valid, you can press the play button in the top right corner to visualize voltage drops in 3D.
+        </p>
+        <img src="img/help2.png" class="helpImg">
+        <p style="font-size: 14px">
+          You can delete elements and specify resistances and voltages using the panel on the left.
+          You can also see calculated values there.
+          There is also an option to save and load your circuits in the top left corner.
+        </p>
+        <p style="font-size: 14px">
+          Check the examples in the open menu!
         </p>
     	</div>
   	</div>
@@ -123,6 +162,7 @@
 
 	// Making sidebars resizable
 	var sidebar = document.getElementById('sidebar');
+  var errorMessage = document.getElementById('errorMessage');
 	var sidebarResize = document.getElementById('sidebarResize');
 	var applyButton = document.getElementById('applyButton');
 	var deleteButton = document.getElementById('deleteButton');
@@ -159,7 +199,7 @@
   var cResize = function(){
     eImage.ch[2].ch[0].ch[0].width = eImage.ch[0].ch[0].width = cWidth = canvas.width = window.innerWidth;
     eImage.ch[0].ch[0].height = cHeight = canvas.height = window.innerHeight;
-		eImage.ch[2].ch[0].ch[1].effect.translate.x = cWidth - 100;
+		eImage.ch[2].ch[0].ch[1].effect.translate.x = cWidth - 150;
   };
 
   window.onresize = cResize;
@@ -235,5 +275,6 @@
 		for (var j = 0; j<size; j++){for (var i = 0; i<size; i++){new resistor('horizontal',i,j); new resistor('vertical',i,j);}}
 	}
   </script>
+</div>
 </body>
 </html>
