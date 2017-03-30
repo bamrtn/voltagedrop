@@ -218,13 +218,15 @@
     offsetY += object.movementY;
   }
   var wheelListener = function(event){
-    var delta;
-    if (event.deltaY/-9+zoom<8){
+		var delta, mouseDelta = event.deltaY/-9;
+		if (mouseDelta>10) mouseDelta = 10;
+		if (mouseDelta<-10) mouseDelta = -10;
+    if (mouseDelta+zoom<8){
       delta = 8-zoom;
       zoom = 8;
     }else{
-      zoom += event.deltaY/-9;
-      delta = event.deltaY/-9;
+      zoom += mouseDelta;
+      delta = mouseDelta;
     }
     offsetX = event.offsetX-zoom/(zoom-delta)*(event.offsetX-offsetX);
     offsetY = event.offsetY-zoom/(zoom-delta)*(event.offsetY-offsetY);

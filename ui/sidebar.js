@@ -83,8 +83,8 @@ function sideDelete(){
 function sideApply(){
   if (sideSelected !== 0){
     var r = document.getElementById('inParam').value;
-    if (parseFloat(r)>0){
-      sideSelected.param = parseFloat(r);
+    if (parseInt(r)>0){
+      sideSelected.param = parseInt(r);
     }
   }
 }

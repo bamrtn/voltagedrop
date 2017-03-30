@@ -78,7 +78,7 @@ public:
   vector<float> solve(){
     out.resize(0);
     for (int i=0; i<num; i++){
-        out.push_back((in[i][num].sign?in[i][num].num/in[i][num].denom:in[i][num].num/in[i][num].denom*-1));
+        out.push_back((in[i][num].sign?(float)in[i][num].num/(float)in[i][num].denom:(float)in[i][num].num/(float)in[i][num].denom*-1));
     }
     return out;
   }
